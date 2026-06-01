@@ -1,10 +1,15 @@
-venv/
-__pycache__/
-*.pyc
-
-logs/
+# Model artifacts
+artifacts/model.pkl
 artifacts/metrics.json
 artifacts/features.json
 
+# MLflow
 mlruns/
+
+# Python
+__pycache__/
+*.pyc
 *.egg-info/
+
+# Virtual environment
+venv/
