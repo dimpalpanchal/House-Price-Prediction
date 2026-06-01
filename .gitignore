@@ -1,6 +1,10 @@
-*.egg-info/
+venv/
 __pycache__/
 *.pyc
-venv/
-artifacts/model.pkl
+
+logs/
+artifacts/metrics.json
+artifacts/features.json
+
 mlruns/
+*.egg-info/
