@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Price Prediction</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>House Price Prediction</h1>
+
+        <p class="subtitle">
+            Predict house prices using machine learning based on property characteristics.
+        </p>
+
+        <form action="/predict-form" method="post">
+
+            <h2>Basic Information</h2>
+
+            <label>
+                Overall Quality (1 - 10)
+            </label>
+            <input
+                type="number"
+                name="OverallQual"
+                min="1"
+                max="10"
+                placeholder="Example: 7"
+                required
+            >
+
+            <label>
+                Living Area (334 - 5642 sq ft)
+            </label>
+            <input
+                type="number"
+                name="GrLivArea"
+                min="334"
+                max="5642"
+                placeholder="Example: 2200"
+                required
+            >
+
+            <label>
+                Garage Capacity (0 - 4 Cars)
+            </label>
+            <input
+                type="number"
+                name="GarageCars"
+                min="0"
+                max="4"
+                placeholder="Example: 2"
+                required
+            >
+
+            <label>
+                Garage Area (0 - 1418 sq ft)
+            </label>
+            <input
+                type="number"
+                name="GarageArea"
+                min="0"
+                max="1418"
+                placeholder="Example: 500"
+                required
+            >
+
+            <label>
+                Basement Area (0 - 6110 sq ft)
+            </label>
+            <input
+                type="number"
+                name="TotalBsmtSF"
+                min="0"
+                max="6110"
+                placeholder="Example: 1200"
+                required
+            >
+
+            <label>
+                Year Built (1872 - 2010)
+            </label>
+            <input
+                type="number"
+                name="YearBuilt"
+                min="1872"
+                max="2010"
+                placeholder="Example: 2005"
+                required
+            >
+
+            <label>
+                Lot Area (1300 - 215245 sq ft)
+            </label>
+            <input
+                type="number"
+                name="LotArea"
+                min="1300"
+                max="215245"
+                placeholder="Example: 9000"
+                required
+            >
+
+            <details class="advanced-section">
+
+                <summary>
+                    Advanced Features (Optional)
+                </summary>
+
+                <p class="advanced-note">
+                    These fields can improve prediction accuracy.
+                    If left empty, sensible default values will be used.
+                </p>
+
+                <label>
+                    First Floor Area (334 - 4692 sq ft)
+                </label>
+                <input
+                    type="number"
+                    name="FirstFlrSF"
+                    min="334"
+                    max="4692"
+                    placeholder="Example: 1200"
+                >
+
+                <label>
+                    Full Bathrooms (0 - 3)
+                </label>
+                <input
+                    type="number"
+                    name="FullBath"
+                    min="0"
+                    max="3"
+                    placeholder="Example: 2"
+                >
+
+                <label>
+                    Total Rooms Above Ground (2 - 14)
+                </label>
+                <input
+                    type="number"
+                    name="TotRmsAbvGrd"
+                    min="2"
+                    max="14"
+                    placeholder="Example: 8"
+                >
+
+                <label>
+                    Remodel Year (1950 - 2010)
+                </label>
+                <input
+                    type="number"
+                    name="YearRemodAdd"
+                    min="1950"
+                    max="2010"
+                    placeholder="Example: 2005"
+                >
+
+                <label>
+                    Masonry Veneer Area (0 - 1600 sq ft)
+                </label>
+                <input
+                    type="number"
+                    name="MasVnrArea"
+                    min="0"
+                    max="1600"
+                    placeholder="Example: 150"
+                >
+
+                <label>
+                    Fireplaces (0 - 3)
+                </label>
+                <input
+                    type="number"
+                    name="Fireplaces"
+                    min="0"
+                    max="3"
+                    placeholder="Example: 1"
+                >
+
+            </details>
+
+            <button type="submit">
+                Predict Price
+            </button>
+
+        </form>
+
+        {% if prediction %}
+
+        <div class="result-card">
+
+            <h2>Predicted House Price</h2>
+
+            <div class="price">
+                ${{ prediction }}
+            </div>
+
+            <p>
+                This estimate is generated using the trained Gradient Boosting Regression model.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</body>
+
+</html>
