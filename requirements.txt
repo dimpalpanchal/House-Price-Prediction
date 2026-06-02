@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+mlflow
+pandas
+numpy
+scikit-learn
+xgboost
+python-dotenv
+dagshub
