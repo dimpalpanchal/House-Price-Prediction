@@ -1,0 +1,15 @@
+[
+    "OverallQual",
+    "GrLivArea",
+    "GarageCars",
+    "GarageArea",
+    "TotalBsmtSF",
+    "1stFlrSF",
+    "FullBath",
+    "TotRmsAbvGrd",
+    "YearBuilt",
+    "YearRemodAdd",
+    "MasVnrArea",
+    "Fireplaces",
+    "LotArea"
+]
