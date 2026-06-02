@@ -10,7 +10,7 @@ import mlflow.sklearn
 import dagshub
 
 from sklearn.model_selection import train_test_split
-
+from xgboost import XGBRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import (
@@ -170,7 +170,14 @@ def main():
             "GradientBoosting":
                 GradientBoostingRegressor(
                     random_state=42
-                )
+                ),
+
+            "XGBoost": XGBRegressor(
+                n_estimators=300,
+                max_depth=4,
+                learning_rate=0.05,
+                random_state=42
+            )
         }
 
         results = {}
