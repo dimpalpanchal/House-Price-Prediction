@@ -5,6 +5,10 @@ import pickle
 
 import pandas as pd
 
+import mlflow
+import mlflow.sklearn
+import dagshub
+
 from sklearn.model_selection import train_test_split
 
 from sklearn.linear_model import LinearRegression
@@ -13,8 +17,6 @@ from sklearn.ensemble import (
     RandomForestRegressor,
     GradientBoostingRegressor
 )
-
-from xgboost import XGBRegressor
 
 from sklearn.metrics import (
     r2_score,
@@ -63,7 +65,7 @@ def evaluate_model(model, X_train, X_test, y_train, y_test):
 
     predictions = model.predict(X_test)
 
-    return {
+    metrics = {
         "r2": float(
             r2_score(y_test, predictions)
         ),
@@ -80,6 +82,8 @@ def evaluate_model(model, X_train, X_test, y_train, y_test):
             )
         )
     }
+
+    return metrics
 
 
 def save_model(model):
@@ -127,18 +131,26 @@ def main():
             "Training pipeline started"
         )
 
+        dagshub.init(
+            repo_owner="dimpalpanchal68",
+            repo_name="House-Price-Prediction",
+            mlflow=True
+        )
+
+        mlflow.set_experiment(
+            "HousePricePrediction"
+        )
+
         df = load_data()
 
         X = df.drop(columns=[TARGET])
         y = df[TARGET]
 
-        X_train, X_test, y_train, y_test = (
-            train_test_split(
-                X,
-                y,
-                test_size=0.2,
-                random_state=42
-            )
+        X_train, X_test, y_train, y_test = train_test_split(
+            X,
+            y,
+            test_size=0.2,
+            random_state=42
         )
 
         models = {
@@ -158,11 +170,6 @@ def main():
             "GradientBoosting":
                 GradientBoostingRegressor(
                     random_state=42
-                ),
-
-            "XGBoost":
-                XGBRegressor(
-                    random_state=42
                 )
         }
 
@@ -174,37 +181,66 @@ def main():
 
         for name, model in models.items():
 
-            logger.info(
-                f"Training {name}"
-            )
+            with mlflow.start_run(
+                run_name=name
+            ):
 
-            metrics = evaluate_model(
-                model,
-                X_train,
-                X_test,
-                y_train,
-                y_test
-            )
+                logger.info(
+                    f"Training {name}"
+                )
 
-            results[name] = metrics
+                metrics = evaluate_model(
+                    model,
+                    X_train,
+                    X_test,
+                    y_train,
+                    y_test
+                )
 
-            logger.info(
-                f"{name} Metrics: {metrics}"
-            )
+                results[name] = metrics
 
-            if metrics["r2"] > best_score:
+                mlflow.log_param(
+                    "model_name",
+                    name
+                )
 
-                best_score = metrics["r2"]
-                best_model = model
-                best_model_name = name
+                mlflow.log_metric(
+                    "r2",
+                    metrics["r2"]
+                )
+
+                mlflow.log_metric(
+                    "mae",
+                    metrics["mae"]
+                )
+
+                mlflow.log_metric(
+                    "rmse",
+                    metrics["rmse"]
+                )
+
+                mlflow.sklearn.log_model(
+                    sk_model=model,
+                    artifact_path="model"
+                )
+
+                logger.info(
+                    f"{name} Metrics: {metrics}"
+                )
+
+                if metrics["r2"] > best_score:
+
+                    best_score = metrics["r2"]
+                    best_model = model
+                    best_model_name = name
 
         save_model(best_model)
+
+        results["best_model"] = best_model_name
 
         save_metrics(results)
 
         save_features()
-
-        results["best_model"] = best_model_name
 
         print("\nTraining Completed")
         print(f"Best Model : {best_model_name}")
